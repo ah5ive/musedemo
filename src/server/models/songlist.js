@@ -10,7 +10,7 @@ module.exports = (dbPoolInstance) => {
         console.log("models: songlist QueryString", queryString);
 
         dbPoolInstance.query(queryString,(error, queryResult) => {
-            console.log("models", queryResult.rows);
+            //console.log("models", queryResult.rows);
 
              callback(error, queryResult.rows);
 
