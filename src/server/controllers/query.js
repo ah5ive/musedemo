@@ -1,6 +1,6 @@
 const request = require('request');
 
-module.exports = {
+module.exports = (db) => {
   get: (req, res) => {
 
     let apiKey = "bsh6u8q5fdw95yrcy6wkvj75";
@@ -16,4 +16,6 @@ module.exports = {
           res.send(body);
     });
    }
+
+
 };
