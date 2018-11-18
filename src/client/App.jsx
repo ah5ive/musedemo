@@ -1,23 +1,39 @@
 import React from 'react';
+import ReactDom from 'react-dom';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { hot } from 'react-hot-loader';
-import Login from './components/login/login'
-// import Product from './components/product/product';
-// import Cart from './components/cart/cart';
-// import Form from './components/form/form';
+import Register from './components/register/register';
 
 class App extends React.Component {
     constructor() {
         super();
         this.state = {
 
-        }   }
+        }
+
+        }
     render() {
 
         return (
-            <div>
-            <h2>Muse Demo</h2>
-            <Login />
-            </div>
+            <Router>
+                <div>
+                    <nav>
+                        <ul>
+                            <li>
+                                <Link to="/">Home</Link>
+                            </li>
+                            <li>
+                                <Link to="/register">Register</Link>
+                            </li>
+
+                        </ul>
+
+                </nav>
+                <h2>Muse Demo</h2>
+                        <Route exact path="/register" component={Register} />
+
+                </div>
+            </Router>
         );
     }}
 
