@@ -1,29 +1,49 @@
 import React from 'react';
 
 //import styles from './style.scss';
-class Register extends React.Component {
+class handleChange extends React.Component {
     constructor(){
         super();
+        this.handleChange = this.handleChange.bind( this );
+        this.handleSubmit = this.handleSubmit.bind( this );
         this.state = {
             username: '',
             email: '',
             password:'',
+            message: '',
 
         };
+    }
+
+    handleChange(event){
+        let target =  event.target;
+        let name = target.name;
+        let value =  target.value;
+
+        this.setState({[name]: value});
+
+
+    }
+
+    handleSubmit(event){
+        event.preventDefault();
+        console.log("CREATEUSER",this.state)
     }
 
     render() {
 
         return(
             <div>
-            <h3>User Registration</h3>
-            <p>Username</p>
-            <input value="Enter Your Username" onChange={(event,value)=>this.setState({username: value})}/><br/>
-            <p>Email</p>
-            <input value="Enter Your Email" onChange={(event,value)=>this.setState({email: value})}/><br/>
-            <p>Password</p>
-            <input value="Enter Your Password" onChange={(event,value)=>this.setState({password: value})}/><br/>
-            <button Onclick={(event)=>this.props.register}>Login</button>
+                <h3>User Registration</h3>
+                <form onSubmit={this.handleSubmit}>
+                    <label>Username</label><br/>
+                    <input name="username" type="username" id="username" value={this.state.username} onChange={this.handleChange} /><br/>
+                    <label>Email</label><br/>
+                    <input name="email" type="email" id="email" value={this.state.email} onChange={this.handleChange} /><br/>
+                    <label>Password</label><br/>
+                    <input name="password" type="password" id="password" value={this.state.password} onChange={this.handleChange} /><br/>
+                    <button>Sign Up</button>
+                </form>
             </div>
 
             )
@@ -31,4 +51,4 @@ class Register extends React.Component {
 
 }
 
-export default Register;
+export default handleChange;
