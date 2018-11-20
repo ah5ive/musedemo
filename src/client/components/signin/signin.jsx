@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router,Route,Link,Redirect } from "react-router-dom";
 //import styles from './style.scss';
-class Register extends React.Component {
+class Signin extends React.Component {
     constructor(){
         super();
 
@@ -9,21 +9,21 @@ class Register extends React.Component {
 
     render() {
 
+        const userPath = "/user/profile/" + this.props.id;
+
         if (this.props.redirect) {
-            return <Redirect to='/' />
+            return <Redirect to= {userPath}/>
         }
 
         return(
             <div>
-                <h3>User Registration</h3>
-                <form onSubmit={this.props.handleSubmit}>
+                <h3>Sign In</h3>
+                <form onSubmit={this.props.handleSignin}>
                     <label>Username</label><br/>
                     <input name="username" type="username" id="username" value={this.props.username} onChange={this.props.handleChange} placeholder="your username" autoComplete="name" required  /><br/>
-                    <label>Email</label><br/>
-                    <input name="email" type="email" id="email" value={this.props.email} onChange={this.props.handleChange} placeholder="your email" autoComplete="email" required  /><br/>
                     <label>Password</label><br/>
                     <input name="password" type="password" id="password" value={this.props.password} onChange={this.props.handleChange} placeholder="your password" autoComplete="password" required /><br/>
-                    <button>Sign Up</button>
+                    <button>Sign In</button>
                 </form>
             </div>
 
@@ -32,4 +32,4 @@ class Register extends React.Component {
 
 }
 
-export default Register;
+export default Signin;

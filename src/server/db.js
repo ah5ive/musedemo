@@ -1,5 +1,5 @@
 const pg = require('pg');
-//const user = require('./models/user');
+const user = require('./models/user');
 const songlist = require('./models/songlist');
 const url = require('url');
 
@@ -40,7 +40,7 @@ module.exports = {
   /*
    * ADD APP MODELS HERE
    */
-  // user: user(pool),
+  user: user(pool),
   songlist: songlist(pool),
 
   //make queries directly from here
