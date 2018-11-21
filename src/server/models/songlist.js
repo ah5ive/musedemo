@@ -1,4 +1,4 @@
-console.log("Model songlists")
+//console.log("Model songlists")
 
 module.exports = (dbPoolInstance) => {
 

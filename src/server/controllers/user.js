@@ -1,4 +1,4 @@
-console.log("CONTROLLER USER");
+//console.log("CONTROLLER USER");
 //var sha256 = require('js-sha256');
 module.exports = (db) => {
 
@@ -84,11 +84,6 @@ module.exports = (db) => {
             //});
         })
     }
-
-    // const getUser = (request, response) => {
-    //     console.log("request is received!!!!", request.body);
-    //     response.send("ok").status(200);
-    // };
 
     return {
         createUser,
