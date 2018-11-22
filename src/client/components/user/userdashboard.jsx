@@ -18,7 +18,7 @@ class Userdashboard extends React.Component {
             playcount: 0,
             songName:'',
             category:'',
-            message:'Upload success'
+            message:' '
         };
 
     }
@@ -89,7 +89,7 @@ class Userdashboard extends React.Component {
         }).then(function(data){
            //let songObject = JSON.parse(data);
            console.log("RESPONSE", data);
-           reactThis.setState({ userSongs: [...reactThis.state.userSongs, data], songName:'', category:'', isUpload: true})
+           reactThis.setState({ userSongs: [...reactThis.state.userSongs, data], songName:'', category:'', isUpload: true, message: 'Upload Success'})
         }).catch(function(err){
             console.log("Fail", err)
         });
@@ -127,7 +127,7 @@ class Userdashboard extends React.Component {
                                 <input type='file' name='audio' onChange={this.fileSelectHandler} /><br/>
                             <button>submit</button>
                         </form>
-                        {this.state.isUpload && <p>{this.state.message}</p>}
+                        <p>{this.state.message}</p>}
                 </div>
             </div>
 
