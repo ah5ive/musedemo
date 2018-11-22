@@ -1,19 +1,7 @@
-//var sha256 = require('js-sha256');
 const multer =  require('multer');
 const cloudinary = require('cloudinary');
-// var storage = multer.diskStorage({
-//   filename: function(request, file, callback) {
-//     callback(null, Date.now() + file.originalname);
-//   }
-// });
+const util = require('util');
 
-// var upLoadFilter = function (request, file, callback) {
-//     // accept image files only
-//     if (!file.originalname.match(/\.(mp3|wav|aiff)$/i)) {
-//         return callback(new Error('Only image files are allowed!'), false);
-//     }
-//     callback(null, true);
-// };
 
 module.exports = (db) => {
 
@@ -26,20 +14,19 @@ module.exports = (db) => {
 
             if (error) {
               console.error('error getting user:', error);
-              response.sendStatus(500);
+               response.sendStatus(500);
             };
 
             if (queryResult.rowCount >= 1) {
               console.log('User created successfully',request.body.username);
 
-              console.log("controllers Sucess",request.body);
+              //console.log("controllers Sucess",request.body);
               //take note on coookie
 
               let responseObject = {
                   success: true,
-                //username: request.body.username,
+                  //username: request.body.username,
               };
-
               response.send(responseObject).status(200);
             } else {
               console.log('User could not be created');
@@ -101,21 +88,30 @@ module.exports = (db) => {
         }
 
         const userUpload = (request, response)=>{
+            console.log("upload", request.body);
+            console.log("file", request.file);
+            // `public/uploads/${request.file.filename}`
             cloudinary.v2.uploader.upload(`public/uploads/${request.file.filename}`,
                 { resource_type: "video" },
                 function(error, result){
-                    db.user.userUpload(result.secure_url, request.body.name,(error, queryResult)=>{
+                    if (error) {
+                        return response.send("failed").status(500);
+                    }
+
+                    db.user.userUpload(result.secure_url, request.body,(error, queryResult)=>{
                         if(error){
                             console.log("error", error);
                             response.sendStatus(500);
                         } else if (queryResult === null){
+                            console.log("400", queryResult)
                             response.status(400);
                         } else {
-                            response.send("success");
+                            response.send(queryResult);
+                            console.log("controller queryResult", queryResult);
                         }
                     });
-                    console.log("cloud", result.secure_url);
-                    console.log("controller request", request.body.name)
+                    //console.log("cloud", result.secure_url);
+                    //console.log("controller request", request.body)
                 });
 
 

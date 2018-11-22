@@ -10,7 +10,7 @@ class Register extends React.Component {
     render() {
 
         if (this.props.redirect) {
-            return <Redirect to='/' />
+            return <Redirect to='/'/>
         }
 
         return(

@@ -50,16 +50,16 @@ module.exports = (dbPoolInstance) => {
     };
 
     const userUpload = (result, user, callback)=>{
-        console.log("models user", user[0], user[1], user[2], user[3], user[4]);
+        console.log("models user", user);
         console.log("model", result);
         const queryString = `INSERT INTO songlists
                                 (songname, user_id, category, song_url, likecount, playcount)
-                                VALUES ($1, $2, $3, $4, $5, $6)`;
+                                VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
 
-        const values = [ user[0], parseInt(user[1]), user[2], result, parseInt(user[3]), parseInt(user[4]) ];
+        const values = [ user.songName, user.userid, user.category, result, user.likecount, user.playcount ];
 
         dbPoolInstance.query(queryString, values, (error, queryResult) => {
-
+            //console.log("xxxx",queryResult)
             if(error){
 
                 console.log(error, null);
@@ -73,10 +73,9 @@ module.exports = (dbPoolInstance) => {
                 }
             }
 
-      });
-//[ 'memories', 'Trip Hop', '1', '0', '0' ]
-    }
+        });
 
+    }
 
     return {
         createUser,
