@@ -1,20 +1,24 @@
 import React from 'react';
-
 //import styles from './style.scss'
 
 class Userdashboard extends React.Component {
     constructor(props){
         super(props);
-        // this.fileSelectHandler = this.fileSelectHandler.bind( this );
-        // this.fileUploadHandle =  this.fileUploadHandle.bind( this );
+        this.fileSelectHandler = this.fileSelectHandler.bind( this );
+        this.fileUploadHandler =  this.fileUploadHandler.bind( this );
+        this.changeHandler =  this.changeHandler.bind( this );
         this.state = {
             userSongs: [],
             isLoaded: false,
-            error: null,
+            isUpload: false,
+            error: '',
             selectfile: null,
             userid: null,
-
-
+            likecount: 0,
+            playcount: 0,
+            songName:'',
+            category:'',
+            message:'Upload success'
         };
 
     }
@@ -32,10 +36,11 @@ class Userdashboard extends React.Component {
             'Content-Type': 'application/json'
                 }
         }).then(function(response){
-            //console.log("=====",response);
+            console.log("==DIDM===",response);
             return response.text();
         }).then(function(data){
             let object = JSON.parse(data);
+            console.log(object);
             reactThis.setState({userSongs: object})
         }).catch(function(err){
             reactThis.setState({isLoaded: false})
@@ -43,39 +48,57 @@ class Userdashboard extends React.Component {
         });
     }
 
-    // fileSelectHandler(event){
-    //     console.log('file input', event.target.files[0]);
-    //     this.setState({selectfile: event.target.files[0]})
-    // }
+    changeHandler(event){
+        let target =  event.target;
+        let name = target.name;
+        let value =  target.value;
 
-    // fileUploadHandle(event){
-    //     const baseUrl = 'http://localhost:3000/api/profile/user/upload';
-    //     const songUpload = {
-    //         song: this.state.selectfile,
-    //         userid: this.props.id
-    //     }
+        this.setState({userid:this.props.id, likecount: 0, playcount:0, [name]: value})
 
-    //     fetch(baseUrl ,{
-    //         method: 'post',
-    //         mode: "cors",
-    //         cache: "no-cache",
-    //         body: JSON.stringify(songUpload),
-    //         headers:{
-    //         'Content-Type': 'application/json'
-    //             }
-    //     }).then(function(response){
-    //         console.log("=====",response);
-    //         //return response.text();
-    //     }).then(function(data){
-    //         //let object = JSON.parse(data);
-    //     }).catch(function(err){
-    //         console.log("Fail",err)
-    //     });
-    // }
+    }
+
+    fileSelectHandler(event){
+        //console.log('file input', event.target.files[0]);
+        this.setState({selectfile: event.target.files[0]})
+    }
+
+    fileUploadHandler(event){
+        event.preventDefault();
+
+        let data = new FormData()
+        //console.log("====", this.state.selectfile)
+        data.append('audio', this.state.selectfile, this.state.selectfile.name)
+        data.append('userid', this.props.id)
+        data.append('likecount', this.state.likecount)
+        data.append('playcount', this.state.playcount)
+        data.append('category', this.state.category)
+        data.append('songName', this.state.songName)
+//
+        const baseUrl = 'http://localhost:3000/api/profile/user/upload';
+
+        var reactThis = this;
+
+        fetch(baseUrl,{
+            method: 'post',
+            mode: "cors",
+            cache: "no-cache",
+            body: data
+        }).then(function(response){
+            console.log("===FILELOAD==",response);
+            return response.json();
+        }).then(function(data){
+           //let songObject = JSON.parse(data);
+           console.log("RESPONSE", data);
+           reactThis.setState({ userSongs: [...reactThis.state.userSongs, data], songName:'', category:'', isUpload: true})
+        }).catch(function(err){
+            console.log("Fail", err)
+        });
+
+    };
 
     render() {
                 //const songs = this.state.userSongs;
-                //console.log("SONGS", songs);
+                console.log("halooo");
                 const{isLoaded, userSongs, error} = this.state;
                 if(error){
                     return <p>{error.message}</p>;
@@ -85,6 +108,7 @@ class Userdashboard extends React.Component {
         return(
             <div>
                 <div>
+                    <h2>Welcome {this.props.username}</h2>
                     <ul>
                         {userSongs.map((userSongs, index)=>
                             <li key={index}>{userSongs.songname} </li>)}
@@ -94,18 +118,16 @@ class Userdashboard extends React.Component {
                 <div>
                         <h2>Upload</h2>
 
-                        <form id="myform" action='/api/profile/user/upload' method="post" encType="multipart/form-data">
-                            <label>Song Name</label>
-                                <input type="text" name="name"/><br/>
-                            <label>Upload File</label>
-                                <input type='file' name='audio' /><br/>
-                                <input type='hidden' name="name" value={this.props.id}/>
-                            <label>Category</label>
-                                <input type="text" name="name"/>
-                                <input type='hidden' name='name' value="0"/>
-                                <input type='hidden' name='name' value="0"/>
+                        <form id="myform" onSubmit={this.fileUploadHandler} encType="multipart/form-data">
+                            <label>Song Name</label><br/>
+                                <input type="text" id="songName" name="songName" value={this.state.songName} onChange={this.changeHandler} /><br/>
+                            <label>Category</label><br/>
+                                <input type="text" id="category" name="category" value={this.state.category} onChange={this.changeHandler} /><br/>
+                            <label>Upload File</label><br/>
+                                <input type='file' name='audio' onChange={this.fileSelectHandler} /><br/>
                             <button>submit</button>
                         </form>
+                        {this.state.isUpload && <p>{this.state.message}</p>}
                 </div>
             </div>
 
