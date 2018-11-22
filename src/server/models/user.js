@@ -1,4 +1,4 @@
-//console.log("Models User")
+
 //var sha256 = require('js-sha256');
 module.exports = (dbPoolInstance) => {
     //create user
@@ -41,7 +41,6 @@ module.exports = (dbPoolInstance) => {
             console.log("==getSonglist==",user.userid);
 
             const queryString = "SELECT songlists.id, users.username, songlists.songname, songlists.user_id, songlists.song_url, songlists.likecount, songlists.playcount FROM songlists INNER JOIN users ON (songlists.user_id = users.id) WHERE songlists.user_id='" + user.userid + "';";
-            //
             //SELECT id, itemname, username_id, rent_id FROM items WHERE rent_id=
                 dbPoolInstance.query(queryString,(error, itemResult) => {
                         // invoke callback function with results after query has executed
@@ -50,10 +49,40 @@ module.exports = (dbPoolInstance) => {
 
     };
 
+    const userUpload = (result, user, callback)=>{
+        console.log("models user", user[0], user[1], user[2], user[3], user[4]);
+        console.log("model", result);
+        const queryString = `INSERT INTO songlists
+                                (songname, user_id, category, song_url, likecount, playcount)
+                                VALUES ($1, $2, $3, $4, $5, $6)`;
+
+        const values = [ user[0], parseInt(user[1]), user[2], result, parseInt(user[3]), parseInt(user[4]) ];
+
+        dbPoolInstance.query(queryString, values, (error, queryResult) => {
+
+            if(error){
+
+                console.log(error, null);
+            } else {
+                if (queryResult.rows[0] === undefined){
+                    callback(null,null);
+                    console.log("upload undefined")
+                }else {
+                    console.log("models: queryResultRow",queryResult.rows[0]);
+                    callback(null,queryResult.rows[0]);
+                }
+            }
+
+      });
+//[ 'memories', 'Trip Hop', '1', '0', '0' ]
+    }
+
+
     return {
         createUser,
         signIn,
         getUser,
+        userUpload,
 
     }
 };

@@ -3,6 +3,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('./logger');
 const db = require('./db');
+const multer = require('multer');
+//multer config
+//const upload = multer({dest:'public/uploads/'});
+const storage = multer.diskStorage({
+    destination: 'public/uploads/',
+    filename: function(request, file, callback){
+        callback(null, file.fieldname + file.originalname);
+        //console.log("multer",request);
+        //console.log("callback", callback);
+    }
+})
+
+const upload = multer({storage: storage});
+
+//cloudinary config
+const cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: 'musedemo',
+  api_key: '714442919729356',
+  api_secret: 'MI1-4IYivIpDPIQtClOiFbB13uQ'
+});
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 process.env.HTTP_PORT = process.env.HTTP_PORT || 3000;
@@ -31,7 +52,7 @@ logger.info(`Application env: ${process.env.NODE_ENV}`);
 app.use(logger.expressMiddleware);
 app.use(bodyParser.json());
 
-require('./routes')(app, db);
+require('./routes')(app, db, upload, cloudinary);//upload, cloudinary
 
 
 // application routes (this goes last)
