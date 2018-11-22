@@ -1,5 +1,20 @@
-//console.log("CONTROLLER USER");
 //var sha256 = require('js-sha256');
+const multer =  require('multer');
+const cloudinary = require('cloudinary');
+// var storage = multer.diskStorage({
+//   filename: function(request, file, callback) {
+//     callback(null, Date.now() + file.originalname);
+//   }
+// });
+
+// var upLoadFilter = function (request, file, callback) {
+//     // accept image files only
+//     if (!file.originalname.match(/\.(mp3|wav|aiff)$/i)) {
+//         return callback(new Error('Only image files are allowed!'), false);
+//     }
+//     callback(null, true);
+// };
+
 module.exports = (db) => {
 
     const createUser = (request, response) => {
@@ -82,14 +97,34 @@ module.exports = (db) => {
                     response.send(queryResult.rows);
                 };
             //});
-        })
-    }
+            })
+        }
+
+        const userUpload = (request, response)=>{
+            cloudinary.v2.uploader.upload(`public/uploads/${request.file.filename}`,
+                { resource_type: "video" },
+                function(error, result){
+                    db.user.userUpload(result.secure_url, request.body.name,(error, queryResult)=>{
+                        if(error){
+                            console.log("error", error);
+                            response.sendStatus(500);
+                        } else if (queryResult === null){
+                            response.status(400);
+                        } else {
+                            response.send("success");
+                        }
+                    });
+                    console.log("cloud", result.secure_url);
+                    console.log("controller request", request.body.name)
+                });
+
+
+        }
 
     return {
         createUser,
         signIn,
         getUser,
-
-
+        userUpload,
     };
 };
