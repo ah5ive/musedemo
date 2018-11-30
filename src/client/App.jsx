@@ -5,6 +5,22 @@ import Register from './components/register/register';
 import Signin from './components/signin/signin';
 import Userdashboard from './components/user/userdashboard';
 import Main from './components/main/main';
+import { withStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar'
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+
+const styles = {
+    root:{
+        flexGrow: 1,
+    },
+
+    grow: {
+        flexGrow: 1,
+    },
+
+}
 
 class App extends React.Component {
 
@@ -96,25 +112,26 @@ class App extends React.Component {
 
         return (
             <div>
-                <div>
-                    <nav>
-                        <ul>
-                            <li>
-                                <NavLink to="/register">Register</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/signin">Sign in</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to={userPath}>Dash Board</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/">Home</NavLink>
-                            </li>
-
-                        </ul>
-
-                    </nav>
+                <div className={styles.root}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Button color="inherit" component={NavLink} to="/register">
+                                <Typography color="inherit">
+                                    Register
+                                </Typography>
+                            </Button>
+                            <Button color="inherit" component={NavLink} to="/signin">
+                                <Typography color="inherit">
+                                    Sign in
+                                </Typography>
+                            </Button>
+                            <Button color="inherit" component={NavLink} to="/">
+                                <Typography color="inherit">
+                                    Home
+                                </Typography>
+                            </Button>
+                        </Toolbar>
+                    </AppBar>
                 </div>
                 <Switch>
                 <div>
