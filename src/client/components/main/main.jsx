@@ -16,6 +16,7 @@ class Main extends React.Component {
         return(
             <div>
                 <h2>Muse Demo</h2>
+                <h3>A site for songwriters to upload their demos</h3>
             </div>
 
             )

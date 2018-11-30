@@ -111,7 +111,11 @@ class Userdashboard extends React.Component {
                     <h2>Welcome {this.props.username}</h2>
                     <ul>
                         {userSongs.map((userSongs, index)=>
-                            <li key={index}>{userSongs.songname} </li>)}
+                            <li key={index}>{userSongs.songname}<br/>
+                                <audio controls>
+                                    <source src={userSongs.song_url} type="audio/mp3" />
+                                </audio>
+                            </li>)}
                     </ul>
 
                 </div>
@@ -127,7 +131,7 @@ class Userdashboard extends React.Component {
                                 <input type='file' name='audio' onChange={this.fileSelectHandler} /><br/>
                             <button>submit</button>
                         </form>
-                        <p>{this.state.message}</p>}
+                        <p>{this.state.message}</p>
                 </div>
             </div>
 

@@ -1,6 +1,5 @@
 import React from 'react';
-//import { withCookies, Cookies } from 'react-cookie';
-import { BrowserRouter as Router,Route,Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, NavLink, Link, Switch, PrivateRoute } from "react-router-dom";
 import { hot } from 'react-hot-loader';
 import Register from './components/register/register';
 import Signin from './components/signin/signin';
@@ -22,6 +21,7 @@ class App extends React.Component {
             message: '',
             //newuser: [],
             redirect: false,
+            signInRedirect: false,
             userId: null,
 
         };
@@ -83,7 +83,7 @@ class App extends React.Component {
             return response.json()
         }).then(function(myresponse){
             //get data from response then setState
-            reactThis.setState({redirect: true, username: myresponse.username, id: myresponse.user_id});
+            reactThis.setState({signInRedirect: true, username: myresponse.username, id: myresponse.user_id});
         }).catch(function(err){
             console.log("Fail",err)
         });
@@ -95,27 +95,40 @@ class App extends React.Component {
         const userPath = "/user/profile/" + this.state.id;
 
         return (
-            <Router>
+            <div>
                 <div>
-                    <h1>Home</h1>
                     <nav>
                         <ul>
                             <li>
-                                <Link to="/">Home</Link>
+                                <NavLink to="/register">Register</NavLink>
                             </li>
                             <li>
-                                <Link to="/register">Register</Link>
+                                <NavLink to="/signin">Sign in</NavLink>
                             </li>
                             <li>
-                                <Link to="/signin">Sign in</Link>
+                                <NavLink to={userPath}>Dash Board</NavLink>
                             </li>
                             <li>
-                                <Link to={userPath}>Dash Board</Link>
+                                <NavLink to="/">Home</NavLink>
                             </li>
 
                         </ul>
 
                     </nav>
+                </div>
+                <Switch>
+                <div>
+                        <Route path="/user/profile/:id" render={() => <Userdashboard
+                                                                        id={this.state.id}
+                                                                        username={this.state.username}/>} />
+                        <Route exact path="/signin"
+                            render={() => <Signin   handleChange={this.handleChange}
+                                                    handleSignin={this.handleSignin}
+                                                    username={this.state.username}
+                                                    password={this.state.password}
+                                                    signInRedirect={this.state.signInRedirect}
+                                                    id={this.state.id}             />}/>
+
                         <Route exact path="/register"
                             render={() => <Register handleChange={this.handleChange}
                                                     handleSubmit={this.handleSubmit}
@@ -124,22 +137,11 @@ class App extends React.Component {
                                                     password={this.state.password}
                                                     redirect={this.state.redirect} />}/>
 
-                        <Route exact path="/signin"
-                            render={() => <Signin   handleChange={this.handleChange}
-                                                    handleSignin={this.handleSignin}
-                                                    username={this.state.username}
-                                                    password={this.state.password}
-                                                    redirect={this.state.redirect}
-                                                    id={this.state.id}             />}/>
-
-                        <Route exact path="/user/profile/:id" render={() => <Userdashboard
-                                                                        id={this.state.id}
-                                                                        username={this.state.username}/>} />
-
                         <Route exact path="/" component={Main} />
 
                 </div>
-            </Router>
+            </Switch>
+            </div>
         );
     }}
 

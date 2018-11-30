@@ -11,7 +11,7 @@ class Signin extends React.Component {
 
         const userPath = "/user/profile/" + this.props.id;
 
-        if (this.props.redirect) {
+        if (this.props.signInRedirect) {
             return <Redirect to= {userPath}/>
         }
 
