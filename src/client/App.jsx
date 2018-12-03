@@ -1,32 +1,31 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, NavLink, Link, Switch, PrivateRoute } from "react-router-dom";
 import { hot } from 'react-hot-loader';
+import PropTypes from 'prop-types';
 import Register from './components/register/register';
 import Signin from './components/signin/signin';
 import Userdashboard from './components/user/userdashboard';
 import Main from './components/main/main';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import Toolbar from '@material-ui/core/Toolbar'
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 const styles = {
-    root:{
-        flexGrow: 1,
-    },
-
-    grow: {
-        flexGrow: 1,
-    },
-
-}
+  root: {
+    flexGrow: 1,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+};
 
 class App extends React.Component {
 
         constructor(props){
         super(props);
-        const { cookies } = props;
         this.handleChange = this.handleChange.bind( this );
         this.handleSubmit = this.handleSubmit.bind( this );
         this.handleSignin = this.handleSignin.bind( this );
@@ -39,6 +38,7 @@ class App extends React.Component {
             redirect: false,
             signInRedirect: false,
             userId: null,
+            signInDashboard: false,
 
         };
     }
@@ -99,7 +99,7 @@ class App extends React.Component {
             return response.json()
         }).then(function(myresponse){
             //get data from response then setState
-            reactThis.setState({signInRedirect: true, username: myresponse.username, id: myresponse.user_id});
+            reactThis.setState({signInRedirect: true, username: myresponse.username, id: myresponse.user_id, signInDashboard:true});
         }).catch(function(err){
             console.log("Fail",err)
         });
@@ -109,35 +109,40 @@ class App extends React.Component {
     render() {
 
         const userPath = "/user/profile/" + this.state.id;
-
+        const { classes } = this.props;
         return (
             <div>
-                <div className={styles.root}>
+                <div className={classes.root}>
                     <AppBar position="static">
                         <Toolbar>
                             <Button color="inherit" component={NavLink} to="/register">
-                                <Typography color="inherit">
+                                <Typography color="inherit" >
                                     Register
                                 </Typography>
                             </Button>
                             <Button color="inherit" component={NavLink} to="/signin">
-                                <Typography color="inherit">
+                                <Typography color="inherit" >
                                     Sign in
                                 </Typography>
                             </Button>
                             <Button color="inherit" component={NavLink} to="/">
-                                <Typography color="inherit">
+                                <Typography color="inherit" >
                                     Home
+                                </Typography>
+                            </Button>
+                            <Button color="inherit" component={NavLink} to={userPath}>
+                                <Typography color="inherit" >
+                                    Dashboard
                                 </Typography>
                             </Button>
                         </Toolbar>
                     </AppBar>
                 </div>
                 <Switch>
-                <div>
                         <Route path="/user/profile/:id" render={() => <Userdashboard
                                                                         id={this.state.id}
-                                                                        username={this.state.username}/>} />
+                                                                        username={this.state.username}
+                                                                        signInDashboard={this.state.signInDashboard} />}/>
                         <Route exact path="/signin"
                             render={() => <Signin   handleChange={this.handleChange}
                                                     handleSignin={this.handleSignin}
@@ -155,11 +160,14 @@ class App extends React.Component {
                                                     redirect={this.state.redirect} />}/>
 
                         <Route exact path="/" component={Main} />
-
-                </div>
-            </Switch>
+                </Switch>
             </div>
+
         );
     }}
 
-export default hot(module)(App);
+App.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(hot(module)(App));
