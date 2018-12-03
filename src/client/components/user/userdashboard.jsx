@@ -1,5 +1,35 @@
 import React from 'react';
-//import styles from './style.scss'
+import { BrowserRouter as Router,Route,Link, Redirect } from "react-router-dom";
+import PropTypes from 'prop-types';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import style from './user.scss'
+
+const styles = theme =>({
+        main: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+
+    },
+
+        paper: {
+            paddingTop:20,
+            paddingLeft:20,
+            PaddingRight:20,
+            height: 400,
+        },
+
+        form:{
+            padding: `${theme.spacing.unit * 3}px ${theme.spacing.unit * 4}px ${theme.spacing.unit * 4}px`
+        },
+
+})
 
 class Userdashboard extends React.Component {
     constructor(props){
@@ -97,42 +127,54 @@ class Userdashboard extends React.Component {
     };
 
     render() {
-                //const songs = this.state.userSongs;
-                console.log("halooo");
+                const { classes } = this.props;
+                //console.log("halooo");
+                if (!this.props.signInDashboard){
+                    return <Redirect to="/signin" />
+                };
+
                 const{isLoaded, userSongs, error} = this.state;
                 if(error){
                     return <p>{error.message}</p>;
                 } else if (isLoaded){
-                    return <p>load...my shit</p>;
+                    return <p>loading....</p>;
                 }
         return(
             <div>
-                <div>
-                    <h2>Welcome {this.props.username}</h2>
-                    <ul>
-                        {userSongs.map((userSongs, index)=>
-                            <li key={index}>{userSongs.songname}<br/>
-                                <audio controls>
-                                    <source src={userSongs.song_url} type="audio/mp3" />
-                                </audio>
-                            </li>)}
-                    </ul>
+                <Paper className={classes.paper} elevation={1}>
+                <Grid container spacing={24}>
+                    <Grid item xs={6}>
+                        <h2>Welcome {this.props.username}</h2>
+                        <ul>
+                            {userSongs.map((userSongs, index)=>
+                                <li key={index}>{userSongs.songname}<br/>
+                                    <audio controls>
+                                        <source src={userSongs.song_url} type="audio/mp3" />
+                                    </audio>
+                                </li>)}
+                        </ul>
 
-                </div>
-                <div>
-                        <h2>Upload</h2>
+                    </Grid>
+                   <Grid item xs={6}>
+                        <form className={classes.form} id="myform" onSubmit={this.fileUploadHandler} encType="multipart/form-data">
+                            <h2>Upload</h2>
+                            <p>{this.state.message}</p>
+                                <FormControl margin="normal" required fullWidth>
+                                <InputLabel htmlFor="Song Name">Song Name</InputLabel>
+                                    <Input type="text" id="songName" name="songName" value={this.state.songName} onChange={this.changeHandler} /><br/>
+                                </FormControl>
+                                <FormControl margin="normal" required fullWidth>
+                                 <InputLabel htmlFor="Category">Category</InputLabel>
+                                    <Input type="text" id="category" name="category" value={this.state.category} onChange={this.changeHandler} /><br/>
+                                </FormControl>
+                                    <input type='file' name='audio' onChange={this.fileSelectHandler} />
 
-                        <form id="myform" onSubmit={this.fileUploadHandler} encType="multipart/form-data">
-                            <label>Song Name</label><br/>
-                                <input type="text" id="songName" name="songName" value={this.state.songName} onChange={this.changeHandler} /><br/>
-                            <label>Category</label><br/>
-                                <input type="text" id="category" name="category" value={this.state.category} onChange={this.changeHandler} /><br/>
-                            <label>Upload File</label><br/>
-                                <input type='file' name='audio' onChange={this.fileSelectHandler} /><br/>
                             <button>submit</button>
                         </form>
-                        <p>{this.state.message}</p>
-                </div>
+
+                    </Grid>
+                </Grid>
+                </Paper>
             </div>
 
             )
@@ -140,4 +182,8 @@ class Userdashboard extends React.Component {
 
 }
 
-export default Userdashboard;
+Userdashboard.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(Userdashboard);
