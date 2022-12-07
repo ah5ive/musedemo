@@ -79,7 +79,7 @@
     "compression": "1.7.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-fbjs": "^2.1.0",
-    "express": "4.16.2",
+    "express": "4.17.3",
     "immutable": "3.8.2",
     "multer": "^1.4.1",
     "pg": "^7.6.1",
